@@ -1,20 +1,24 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import BoardTile from "./BoardTile";
-import { useSelector, useDispatch } from "react-redux";
-import * as actions from "../../actions/BoardActions";
+
 import CreateBoardTile from "./CreateBoardTile";
+import { BoardContext } from "../../context/board-context";
+import apiClient from "../../lib/ApiClient";
 
 const BoardsDashboard = (props) => {
-  const boards = useSelector((state) => state.boards);
+  const [boards, dispatch] = useContext(BoardContext);
 
   const boardTiles = boards.map((board) => {
     return <BoardTile key={board._id} title={board.title} id={board._id} />;
   });
 
-  const dispatch = useDispatch();
-
   useEffect(() => {
-    dispatch(actions.fetchBoards());
+    apiClient.getBoards((data) => {
+      dispatch({
+        type: "GET_BOARDS",
+        payload: data.boards,
+      });
+    });
   }, [dispatch]);
 
   return (

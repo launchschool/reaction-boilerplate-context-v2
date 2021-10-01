@@ -1,30 +1,25 @@
-import React, { useCallback } from "react";
-import { useDispatch } from "react-redux";
+import React, { useContext } from "react";
 import useInput from "../../hooks/useInput";
-import * as actions from "../../actions/BoardActions";
+import { BoardContext } from "../../context/board-context";
+import apiClient from "../../lib/ApiClient";
 
 const NewBoardForm = (props) => {
   const { value: title, bind: bindTitle } = useInput("");
 
-  const dispatch = useDispatch();
+  const [, dispatch] = useContext(BoardContext);
 
-  const createBoard = useCallback(
-    (newBoard, callback) => {
-      dispatch(actions.createBoard(newBoard, callback));
-    },
-    [dispatch]
-  );
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
 
-  const handleSubmit = useCallback(
-    (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-
-      const newBoard = { title };
-      createBoard(newBoard, props.onCloseClick(new Event("click")));
-    },
-    [createBoard, props, title]
-  );
+    apiClient.createBoard({ title }, (data) => {
+      dispatch({
+        type: "CREATE_BOARD",
+        payload: data.board,
+      });
+      props.onCloseClick(new Event("click"));
+    });
+  };
 
   return (
     <div>
