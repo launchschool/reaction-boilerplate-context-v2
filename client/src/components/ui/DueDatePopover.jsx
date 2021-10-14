@@ -51,7 +51,7 @@ class DueDatePopover extends React.Component {
   }
   render() {
     return (
-      <div className="popover due-date">
+      <div>
         <header>
           <span>Change due date</span>
           <a href="#" className="icon-sm icon-close"></a>
