@@ -5,7 +5,7 @@ const defaultStateValue = {
 };
 const defaultDispatchValue = {
   createBoard: () => undefined,
-  getBoards: () => undefined,
+  setBoards: () => undefined,
 };
 
 export const BoardStateContext = createContext(defaultStateValue);
@@ -13,15 +13,6 @@ export const BoardDispatchContext = createContext(defaultDispatchValue);
 
 export const BoardProvider = (props) => {
   const [boards, setBoards] = useState([]);
-
-  const getBoards = useCallback(
-    (data) => {
-      setBoards(() => {
-        return data;
-      });
-    },
-    [setBoards]
-  );
 
   const createBoard = useCallback(
     (data) => {
@@ -36,7 +27,7 @@ export const BoardProvider = (props) => {
     <BoardDispatchContext.Provider
       value={{
         createBoard,
-        getBoards,
+        setBoards,
       }}
     >
       <BoardStateContext.Provider

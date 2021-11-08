@@ -10,7 +10,7 @@ import apiClient from "../../lib/ApiClient";
 
 const BoardsDashboard = (props) => {
   const { boards } = useContext(BoardStateContext);
-  const { getBoards } = useContext(BoardDispatchContext);
+  const { setBoards } = useContext(BoardDispatchContext);
 
   const boardTiles = boards.map((board) => {
     return <BoardTile key={board._id} title={board.title} id={board._id} />;
@@ -18,9 +18,9 @@ const BoardsDashboard = (props) => {
 
   useEffect(() => {
     apiClient.getBoards((data) => {
-      getBoards(data.boards);
+      setBoards(data.boards);
     });
-  }, [getBoards]);
+  }, [setBoards]);
 
   return (
     <main className="dashboard">
