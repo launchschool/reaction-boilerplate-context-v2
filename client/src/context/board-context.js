@@ -1,24 +1,51 @@
-import React, { useReducer, createContext } from "react";
+import React, { createContext, useCallback, useState } from "react";
 
-export const BoardContext = createContext();
-
-const reducer = (state = [], action) => {
-  switch (action.type) {
-    case "GET_BOARDS":
-      return action.payload;
-    case "CREATE_BOARD":
-      return state.concat(action.payload);
-    default:
-      throw new Error();
-  }
+const defaultStateValue = {
+  boards: [],
+};
+const defaultDispatchValue = {
+  createBoard: () => undefined,
+  getBoards: () => undefined,
 };
 
-export const BoardContextProvider = (props) => {
-  const [boards, dispatch] = useReducer(reducer, []);
+export const BoardStateContext = createContext(defaultStateValue);
+export const BoardDispatchContext = createContext(defaultDispatchValue);
+
+export const BoardProvider = (props) => {
+  const [boards, setBoards] = useState([]);
+
+  const getBoards = useCallback(
+    (data) => {
+      setBoards(() => {
+        return data;
+      });
+    },
+    [setBoards]
+  );
+
+  const createBoard = useCallback(
+    (data) => {
+      setBoards((currentBoards) => {
+        return [...currentBoards, data];
+      });
+    },
+    [setBoards]
+  );
 
   return (
-    <BoardContext.Provider value={[boards, dispatch]}>
-      {props.children}
-    </BoardContext.Provider>
+    <BoardDispatchContext.Provider
+      value={{
+        createBoard,
+        getBoards,
+      }}
+    >
+      <BoardStateContext.Provider
+        value={{
+          boards,
+        }}
+      >
+        {props.children}
+      </BoardStateContext.Provider>
+    </BoardDispatchContext.Provider>
   );
 };

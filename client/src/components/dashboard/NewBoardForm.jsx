@@ -1,22 +1,18 @@
 import React, { useContext } from "react";
 import useInput from "../../hooks/useInput";
-import { BoardContext } from "../../context/board-context";
+import { BoardDispatchContext } from "../../context/board-context";
 import apiClient from "../../lib/ApiClient";
 
 const NewBoardForm = (props) => {
   const { value: title, bind: bindTitle } = useInput("");
 
-  const [, dispatch] = useContext(BoardContext);
-
+  const { createBoard } = useContext(BoardDispatchContext);
   const handleSubmit = async (e) => {
     e.preventDefault();
     e.stopPropagation();
 
     apiClient.createBoard({ title }, (data) => {
-      dispatch({
-        type: "CREATE_BOARD",
-        payload: data.board,
-      });
+      createBoard(data.board);
       props.onCloseClick(new Event("click"));
     });
   };

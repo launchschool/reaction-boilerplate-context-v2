@@ -2,11 +2,15 @@ import React, { useEffect, useContext } from "react";
 import BoardTile from "./BoardTile";
 
 import CreateBoardTile from "./CreateBoardTile";
-import { BoardContext } from "../../context/board-context";
+import {
+  BoardStateContext,
+  BoardDispatchContext,
+} from "../../context/board-context";
 import apiClient from "../../lib/ApiClient";
 
 const BoardsDashboard = (props) => {
-  const [boards, dispatch] = useContext(BoardContext);
+  const { boards } = useContext(BoardStateContext);
+  const { getBoards } = useContext(BoardDispatchContext);
 
   const boardTiles = boards.map((board) => {
     return <BoardTile key={board._id} title={board.title} id={board._id} />;
@@ -14,12 +18,9 @@ const BoardsDashboard = (props) => {
 
   useEffect(() => {
     apiClient.getBoards((data) => {
-      dispatch({
-        type: "GET_BOARDS",
-        payload: data.boards,
-      });
+      getBoards(data.boards);
     });
-  }, [dispatch]);
+  }, [getBoards]);
 
   return (
     <main className="dashboard">
